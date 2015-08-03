@@ -1,0 +1,123 @@
+<dom-module id="daftar-katalog">
+    <style>
+        paper-button {
+            background: transparent;
+            color: #FFAB00;
+        }
+
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        @media (min-width: 601px) {
+            paper-material {
+                width: calc(98% - 46px);
+                margin-bottom: 32px;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .paper-font-display-1, .paper-font-title {
+                font-size: 15px;
+            }
+
+            paper-material {
+                --menu-container-display: none;
+                width: calc(90.33% - 32px); /* ini harusnya 97.33% */
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        paper-ripple {color: #FFAB00; display: none;}
+        h1 {margin: 0;}
+        p {
+            color: #333;
+            margin: 0;
+            text-transform: capitalize;
+        }
+        span.keterangan { text-transform: none; }
+    </style>
+
+
+
+    <template>
+        <template is="dom-repeat" items="{{katalog}}">
+            <template is="dom-if" if="{{!dicuci}}">
+                <template is="dom-if" if="{{!item.dicuci}}">
+                    <paper-material class="vertical layout">
+                        <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
+                        <p class="paper-font-title"><span>{{item.jenis}}</span> <span>{{item.warna}}</span><span class="keterangan">{{item.keterangan}}</span></p>
+                        <paper-ripple></paper-ripple>
+                        <div class="horizontal layout">
+                            <span class="flex"></span>
+                            <paper-button noink class="paper-font-button" on-tap="cuci">Cuci</paper-button>
+                        </div>
+                    </paper-material>
+                </template>
+            </template>
+
+            <template is="dom-if" if="{{dicuci}}">
+                <template is="dom-if" if="{{item.dicuci}}">
+                    <paper-material class="vertical layout">
+                        <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
+                        <p class="paper-font-title"><span>{{item.jenis}}</span> <span>{{item.warna}}</span><span class="keterangan">{{item.keterangan}}</span></p>
+                        <paper-ripple></paper-ripple>
+                        <div class="horizontal layout">
+                            <span class="flex"></span>
+                            <paper-button noink class="paper-font-button" on-tap="selesai">Selesai</paper-button>
+                        </div>
+                    </paper-material>
+                </template>
+            </template>
+        </template>
+    </template>
+</dom-module>
+
+
+
+<script>
+    (function() {
+        Polymer({
+            is: 'daftar-katalog',
+
+            properties: {
+                dicuci: { type: Boolean, value: false },
+                katalog: { type: Array, notify: true }
+            },
+
+            ready: function() {
+
+            },
+
+            cuci: function(e) {
+                var rowid = e.model.item.rowid;
+                var ini = this;
+                db.transaction(function(t) {
+                    t.executeSql("update katalog set dicuci=? where rowid=?", [1, rowid], ini.update(rowid, 1));
+                });
+            },
+
+            selesai: function(e) {
+                var rowid = e.model.item.rowid;
+                var ini = this;
+                db.transaction(function(t) {
+                    t.executeSql("update katalog set dicuci=? where rowid=?", [0, rowid], ini.update(rowid, 0));
+                });
+            },
+
+            update: function(rowid, dicuci) {
+                this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
+            }, 
+
+
+        });
+    })();
+</script>

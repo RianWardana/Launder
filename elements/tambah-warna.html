@@ -1,0 +1,173 @@
+<dom-module id="tambah-warna">
+    <style>
+        
+
+        #colorThis { width: 150px; }
+        
+        @media(max-width: 800px) { #colorThis { width: 100px; } }
+
+        paper-input {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        paper-slider[merah] { 
+            --paper-slider-active-color: var(--google-red-500); 
+            --paper-slider-knob-color: var(--google-red-500);
+            --paper-slider-pin-color: var(--google-red-500);
+        }
+
+        paper-slider[hijau] { 
+            --paper-slider-active-color: var(--google-green-500); 
+            --paper-slider-knob-color: var(--google-green-500);
+            --paper-slider-pin-color: var(--google-green-500);
+        }
+
+        paper-slider[biru] { 
+            --paper-slider-active-color: var(--google-blue-500); 
+            --paper-slider-knob-color: var(--google-blue-500);
+            --paper-slider-pin-color: var(--google-blue-500);
+        }
+
+        paper-button {
+            background: transparent;
+            color: #FFAB00;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        p { color: #333; }
+
+        paper-toast { z-index: 9999; }
+
+        /**************** PAPER - MATERIAL ************************/
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        @media (min-width: 601px) {
+            paper-material {
+                width: calc(98% - 46px);
+                margin-bottom: 32px;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            paper-material {
+                --menu-container-display: none;
+                width: calc(90.33% - 32px);
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+        /**********************************************************/
+    </style>
+
+
+
+    <template>
+        <paper-material>
+            <p class="paper-font-title">Tambah Warna</p>  
+
+
+            <div class="horizontal layout">
+                <div class="vertical layout">
+                    <div class="flex" id="colorThis"></div>
+                </div>
+                <div class="flex">
+                    <paper-input class="flex" label="Warna" no-label-float auto-validate pattern="[a-zA-Z- ]*" maxlength="16" value="{{inputWarna}}"></paper-input>
+                    <div class="horizontal layout"><paper-slider merah class="flex" min="0" max="255" value="{{red}}" pin></paper-slider></div>
+                    <div class="horizontal layout"><paper-slider hijau class="flex" min="0" max="255" value="{{green}}" pin></paper-slider></div>
+                    <div class="horizontal layout"><paper-slider biru class="flex" min="0" max="255" value="{{blue}}" pin></paper-slider></div>
+                </div>
+            </div>
+
+
+            <div class="horizontal layout">
+                <span class="flex"></span>
+                <paper-button on-tap="tambah">Tambah</paper-button>
+            </div>
+        </paper-material>
+
+        <paper-toast id="toastKosong" text="Warna tidak boleh dikosongkan."></paper-toast>
+        <paper-toast id="toastGagal" text="Update database gagal."></paper-toast>
+        <paper-toast id="toastBerhasil" text="Penambahan warna berhasil."></paper-toast>
+    </template>
+</dom-module>
+
+
+
+<script>
+    (function() {
+        Polymer({
+            is: 'tambah-warna',
+
+            properties: {
+                warna: { type: Array },
+                inputWarna: String,
+                inputHex: String,
+                red: { type: String, notify: true, observer: 'ganti' },
+                green: { type: String, notify: true, observer: 'ganti' },
+                blue: { type: String, notify: true, observer: 'ganti' }
+            },
+
+            ready: function() {
+                this.reset();
+            },
+
+            reset: function() {
+                this.inputWarna = "";
+                this.inputHex = "";
+                this.red = "50";
+                this.green = "50";
+                this.blue = "50";
+            },
+
+            ganti: function() {
+                var rgb = "rgb(" + this.red + ", " + this.green + ", " + this.blue + ")";
+                this.$.colorThis.style.background = rgb;
+                this.inputHex = rgb;
+            },
+
+            tambah: function() {
+                if ( (this.inputWarna != "") && (this.inputHex != "") ) {
+                    var ini = this;
+                    db.transaction(
+                        function(t) {
+                            t.executeSql("insert into warna (warna, hex) values (?, ?)", 
+                                [ini.inputWarna, ini.inputHex]
+                            );
+                            
+                            t.executeSql("update timestamp set timestamp=? where rowid=1",
+                                [Math.floor(Date.now() /1000)]
+                            );
+                        },  
+                        function(){ ini.$.toastGagal.show(); }, 
+                        function() { ini.update(); } 
+                    );
+                }
+
+                else { this.$.toastKosong.show(); }
+            },
+
+            update: function() {
+                this.push('warna', {
+                    rowid: this.warna.length + 1,
+                    warna: this.inputWarna,
+                    hex: this.inputHex
+                });
+                this.$.toastBerhasil.show();
+                this.reset();
+            }
+
+
+        });
+    })();
+</script>

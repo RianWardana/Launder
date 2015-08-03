@@ -1,0 +1,213 @@
+<dom-module id="tambah-katalog">
+    <style>
+        .horizontal.layout { margin-top: 20px; }
+        paper-menu-button { padding: 0; }
+        paper-button.dropdown-trigger {
+            background: #FFAB00;
+            color: #FFF;
+            margin: 0;
+            width: 120px;
+        }
+
+        paper-button {
+            background: transparent;
+            color: #FFAB00;
+            margin-bottom: 10px;
+        }
+
+        paper-item { text-transform: capitalize; }
+
+        paper-input { margin-left: 20px; text-transform: capitalize; }
+
+        paper-input[lower-case] { text-transform: none; }
+        
+        paper-button[disabled] { margin: 0; padding: 0; width: 120px; }
+        
+        paper-checkbox { margin-top: 30px; margin-bottom: 0; }
+
+        paper-toast { z-index: 9999; }
+
+        p {
+            color: #333;
+            margin-bottom: 0;
+        }
+
+        /**************** PAPER - MATERIAL ************************/
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        @media (min-width: 601px) {
+            paper-material {
+                width: calc(98% - 46px);
+                margin-bottom: 32px;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            paper-material {
+                --menu-container-display: none;
+                width: calc(90.33% - 32px);
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+        /**********************************************************/
+    </style>
+
+
+
+    <template>
+        <paper-material>  
+            <div class="horizontal layout">
+                <paper-menu-button no-animations>
+                    <paper-button class="dropdown-trigger" raised>Jenis</paper-button>
+                    <paper-menu class="dropdown-content">
+                        <template is="dom-repeat" items="{{jenis}}">
+                            <paper-item on-tap="tutupJenis">{{item.jenis}}</paper-item>
+                        </template>
+                    </paper-menu>
+                </paper-menu-button>
+                <paper-input label="{{pilihanJenis}}" disabled no-label-float class="flex"></paper-input>
+            </div>
+
+             <div class="horizontal layout">
+                <paper-menu-button no-animations>
+                    <paper-button class="dropdown-trigger" raised>Warna</paper-button>
+                    <paper-menu class="dropdown-content">
+                        <template is="dom-repeat" items="{{warna}}">
+                            <paper-item on-tap="tutupWarna">{{item.warna}}</paper-item>
+                        </template>
+                    </paper-menu>
+                </paper-menu-button>
+                <paper-input label="{{pilihanWarna}}" disabled no-label-float class="flex"></paper-input>
+            </div>
+
+
+            <div class="horizontal layout">
+                <paper-button disabled>Nama</paper-button>
+                <paper-input disabled no-label-float lower-case label="{{namaLengkap}}" class="flex"></paper-input>
+            </div>
+
+            <div class="horizontal layout">
+                <paper-button disabled>Keterangan</paper-button>
+                <paper-input label="Tulis Keterangan" no-label-float class="flex" value="{{inputKeterangan}}"></paper-input>
+            </div>
+
+            <paper-checkbox checked="{{pilihanDicuci}}">Dalam Cucian</paper-checkbox>
+            <div class="horizontal layout">
+
+                <span class="flex"></span>
+                <paper-button on-tap="tambah">Tambah</paper-button>
+            </div>
+        </paper-material>
+
+        <paper-toast id="toastKosong" text="Jenis dan Warna tidak boleh dikosongkan."></paper-toast>
+        <paper-toast id="toastGagal" text="Update database gagal."></paper-toast>
+        <paper-toast id="toastBerhasil" text="Penambahan katalog berhasil."></paper-toast>
+
+        <tambah-jenis jenis="{{jenis}}"></tambah-jenis>
+        <tambah-warna warna="{{warna}}"></tambah-warna>
+    </template>
+</dom-module>
+
+
+
+<script>
+    (function() {
+        Polymer({
+            is: 'tambah-katalog',
+
+            properties: {
+                katalog: { type: Array, notify: true },
+                jenis: { type: Array },
+                warna: { type: Array },
+                rowidJenis: Number,
+                pilihanNama: String,
+                pilihanJumlah: Number,
+                pilihanJenis: String,
+                pilihanWarna: String,
+                namaLengkap: String,
+                inputKeterangan: String,
+                pilihanDicuci: Boolean
+            },
+
+            ready: function() {
+                this.reset();
+            },
+
+            tutupJenis: function(e) {
+                this.rowidJenis = e.model.item.rowid;
+                this.pilihanNama = e.model.item.nama;
+                this.pilihanJumlah = e.model.item.jumlah + 1;
+                this.pilihanJenis = e.model.item.jenis;
+                this.namaLengkap = this.pilihanNama + (this.pilihanJumlah < 10 ? '0' : '') + this.pilihanJumlah;
+            },
+
+            tutupWarna: function(e) {
+                var warna = e.model.item.warna;
+                this.pilihanWarna = warna;
+            },
+
+            tambah: function() {
+                if ( (this.pilihanJenis != "Pilih Jenis") && (this.pilihanWarna != "Pilih Warna") ) {
+                    var ini = this;
+                    db.transaction(
+                        function(t) {
+                            t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values(?, ?, ?, ?, ?)", 
+                                [ini.namaLengkap, ini.pilihanJenis, ini.pilihanWarna, (ini.inputKeterangan != '' ? ', ' : '') + ini.inputKeterangan, ini.pilihanDicuci]
+                            );
+
+                            t.executeSql("update jenis set jumlah=? where nama=?", 
+                                [ini.pilihanJumlah, ini.pilihanNama]
+                            );
+
+                            t.executeSql("update timestamp set timestamp=? where rowid=1",
+                                [Math.floor(Date.now() /1000)]
+                            );
+                        },  
+                        function(){ ini.$.toastGagal.show(); }, 
+                        function() { ini.update(); } 
+                    );
+                }
+
+                else { this.$.toastKosong.show(); }
+            },
+
+            update: function() {
+                this.push('katalog', {
+                    rowid: this.katalog.length + 1,
+                    nama: this.namaLengkap,
+                    jenis: this.pilihanJenis,
+                    warna: this.pilihanWarna,
+                    keterangan: (this.inputKeterangan != '' ? ', ' : '') + this.inputKeterangan,
+                    dicuci: this.pilihanDicuci
+                });
+                this.set(['jenis', this.rowidJenis - 1, 'jumlah'], this.pilihanJumlah);
+                this.$.toastBerhasil.show();
+                this.reset();
+            },
+
+            reset: function() {
+                this.pilihanJenis = "Pilih Jenis";
+                this.pilihanWarna = "Pilih Warna";
+                this.namaLengkap = "Tidak dapat diubah";
+                this.inputKeterangan = "";
+                this.pilihanDicuci = 0;
+            }
+
+            
+
+
+
+
+        });
+    })();
+</script>

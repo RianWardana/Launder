@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="generator" content="Launder">
+        <meta name="description" content="Personal clothing catalog and laundry management system">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta name="theme-color" content="#03A9F4">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="Launder">
+        <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+        <title>Launder</title>
+        
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <link rel="import" href="elements/imports.html">
+
+        <style>
+            body {
+                background: #f7f7f7;
+                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                color: #333;
+                -webkit-tap-highlight-color: rgba(0,0,0,0);
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            iron-image {
+                width: 256px;
+                height: 200px;
+            }
+
+            paper-fab {
+                position: fixed;
+                right: 5%;
+                bottom: 5%;
+            }
+
+            @media (max-width: 600px) {
+                section[halaman="Katalog"] { margin-bottom: 100px; }
+            }
+        </style>
+    </head>
+
+    <body unresolved class="fullbleed layout vertical">
+        <span id="browser-sync-binding"></span>
+        
+        <template is="dom-bind" id="app">
+            <paper-drawer-panel id="paperDrawerPanel">
+                <div drawer class="vertical layout">
+                    <iron-image sizing="cover" src="images/Launder.jpg"></iron-image>
+                    <paper-menu selected="{{halaman_sekarang}}" attr-for-selected="halaman" on-iron-select="onMenuSelect">
+                        <paper-item halaman="Katalog">Katalog</paper-item>
+                        <paper-item halaman="Dalam Cucian">Dalam Cucian</paper-item>
+                        <paper-item halaman="Pengaturan">Pengaturan</paper-item>
+                    </paper-menu>
+                </div>
+
+                <paper-header-panel main>
+                    <!-- Main Toolbar -->
+                    <paper-toolbar class="horizontal layout">
+                        <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+                        <p class="paper-font-title">{{halaman_sekarang}}</p>
+                    </paper-toolbar>
+                    
+                    <!-- Main Content -->
+                    <div class="content">
+                        <iron-pages class="" selected="{{halaman_sekarang}}" attr-for-selected="halaman">
+                            
+
+                            <section halaman="Katalog">
+                                <daftar-katalog katalog="{{katalog}}"></daftar-katalog>
+                                <paper-fab icon="add" on-click="hello"></paper-fab>
+                            </section>
+
+
+                            <section halaman="Dalam Cucian">
+                                <daftar-katalog dicuci katalog="{{katalog}}"></daftar-katalog>
+                            </section>
+
+
+                            <section halaman="Tambah">
+                                <tambah-katalog katalog="{{katalog}}" jenis="{{jenis}}" warna="{{warna}}"></tambah-katalog>
+                            </section>
+
+
+                            <section halaman="Pengaturan">
+                                <pengaturan-katalog katalog="{{katalog}}" jenis="{{jenis}}" warna="{{warna}}"></pengaturan-katalog>
+                            </section>
+
+
+                        </iron-pages>
+                    </div>
+                </paper-header-panel>
+            </paper-drawer-panel>
+        </template>
+
+        <script src="js/app.js"></script>
+    </body>
+</html>

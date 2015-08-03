@@ -1,0 +1,305 @@
+<dom-module id="pengaturan-katalog">
+    <style>
+        paper-button {
+            color: #FFAB00;
+        }
+        
+        paper-spinner {
+            margin-top: 7px;
+            margin-bottom: 6px;
+            margin-right: 30px;
+        }
+
+        paper-spinner { margin-right: 50px; }
+
+        paper-toast { z-index: 999; }
+
+        span[role="button"] { color: #FFAB00; margin: 10px; }
+
+    /************************* PAPER MATERIAL *****************************/
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        @media (min-width: 601px) {
+            paper-material {
+                width: calc(98% - 46px);
+                margin-bottom: 32px;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            paper-material {
+                --menu-container-display: none;
+                width: calc(90.33% - 32px); /* ini harusnya 97.33% */
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+    /**********************************************************************/
+    </style>
+
+
+
+    <template>
+        
+        <paper-material>
+            <p>Klik tombol di bawah untuk melalukan sinkronisasi ke server.</p>
+            <div class="horizontal layout">
+                <span class="flex"></span>
+                <paper-spinner id="spinnerSinkron"></paper-spinner>
+                <paper-button id="buttonSinkron" on-tap="sinkronisasi">Sinkronisasi</paper-button>
+            </div>
+        </paper-material>
+
+        <paper-material>
+            <p>Klik tombol di bawah untuk mengeksekusi file konfigurasi database.</p>
+            <div class="horizontal layout">
+                <span class="flex"></span>
+                <paper-button id="buttonKonfigurasi" on-tap="klikKonfigurasi">Konfigurasi</paper-button>
+            </div>
+        </paper-material>
+
+        <paper-material>
+            <p>Klik tombol di bawah untuk menghapus semua data katalog.</p>
+            <div class="horizontal layout">
+                <span class="flex"></span>
+                <paper-button id="buttonHapus" on-tap="klikHapus">Hapus</paper-button>
+            </div>
+        </paper-material>
+        
+        <paper-toast id="toastKonfigurasi" duration="5000" text="Anda yakin? Aplikasi akan restart.">
+            <span role="button" on-tap="konfigurasi">Lanjut</span>
+        </paper-toast>
+        <paper-toast id="toastHapus" duration="5000" text="Anda yakin? Aplikasi akan restart.">
+            <span role="button" on-tap="hapus">Hapus</span>
+        </paper-toast>
+        <paper-toast id="toastSukses" text="Sinkronisasi berhasil."></paper-toast>
+        <paper-toast id="toastGagal" text="Sinkronisasi gagal."></paper-toast>
+    </template>
+</dom-module>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    (function() {
+        Polymer({
+            is: 'pengaturan-katalog',
+
+            properties: {
+                data: { type: Object },
+                katalog: { type: Array, notify: true },
+                jenis: { type: Array, notify: true },
+                warna: { type: Array, notify: true }
+            },
+
+            ready: function() {
+                this.sinkronisasi();
+            },
+
+            isiData: function() {
+                console.log("Isi Data");
+                var ini = this;
+                db.transaction(function(t) {
+                    t.executeSql("select timestamp from timestamp", [], function(t, result) {
+                        ini.timestampLocal = result.rows.item(0).timestamp;
+                        ini.data = {
+                            katalog: ini.katalog,
+                            jenis: ini.jenis,
+                            warna: ini.warna,
+                            timestamp: ini.timestampLocal
+                        };
+                    });
+                });
+            },
+
+            sinkronisasi: function() {
+                this.isiData();
+
+                console.log("Sinkronisasi");
+
+                this.$.buttonSinkron.style.display = 'none';
+                this.$.spinnerSinkron.style.display = 'block'; 
+                this.$.spinnerSinkron.setAttribute('active', 'true');
+                var ini = this;
+
+                $.ajax({
+                    url: 'http://rianwardana.com/launder/api/timestamp',
+                    success: function(respons) {
+                        ini.timestampServer = parseInt(respons);
+                        if (ini.timestampLocal > ini.timestampServer) { ini.unggah(); }
+                        else if (ini.timestampLocal < ini.timestampServer) { ini.unduh(); }
+                        else { ini.$.toastSukses.show(); }
+                    },
+                    complete: function() {
+                        ini.$.spinnerSinkron.removeAttribute('active');
+                        ini.$.spinnerSinkron.style.display = 'none'; 
+                        ini.$.buttonSinkron.style.display = 'block';
+                    }
+                });
+            },
+
+            unggah: function() {
+                console.log("Upload");
+                var ini = this;
+
+                $.ajax({
+                    url: 'http://rianwardana.com/launder/api/post',
+                    type: 'POST',
+                    data: ini.data,
+                    success: function() { ini.$.toastSukses.show(); },
+                    error: function() { ini.$.toastGagal.show(); }
+                });
+            },
+
+            unduh: function() {
+                console.log("Download");
+                var ini = this;
+
+                $.ajax({
+                    url: 'http://rianwardana.com/launder/api',
+                    success: function(respons) {
+                        var data = JSON.parse(respons);
+                        
+                        // ISI KATALOG DARI SERVER //
+                        ini.katalog = [];
+                        db.transaction(function(t) {t.executeSql("truncate table katalog");})
+                        $.each(data.katalog, function(i, katalog) {
+                            ini.push('katalog', {
+                                rowid: katalog.rowid,
+                                nama: katalog.nama,
+                                jenis: katalog.jenis,
+                                warna: katalog.warna,
+                                keterangan: katalog.keterangan,
+                                dicuci: katalog.dicuci
+                            });
+
+                            db.transaction(function(t) {
+                                t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values(?, ?, ?, ?, ?)",
+                                    [katalog.nama, katalog.jenis, katalog.warna, katalog.keterangan, katalog.dicuci]
+                                )
+                            });
+                        })
+
+                        // ISI JENIS DARI SERVER //
+                        ini.jenis = [];
+                        db.transaction(function(t) {t.executeSql("truncate table jenis");})
+                        $.each(data.jenis, function(i, jenis) {
+                            ini.push('jenis', {
+                                rowid: jenis.rowid,
+                                nama: jenis.nama,
+                                jenis: jenis.jenis,
+                                jumlah: jenis.jumlah
+                            });
+
+                            db.transaction(function(t) {
+                                t.executeSql("insert into jenis (nama, jenis, jumlah) values(?, ?, ?)",
+                                    [jenis.nama, jenis.jenis, jenis.jumlah]
+                                )
+                            });
+                        })
+
+                        // ISI WARNA DARI SERVER //
+                        ini.warna = [];
+                        db.transaction(function(t) {t.executeSql("truncate table warna");})
+                        $.each(data.warna, function(i, warna) {
+                            ini.push('warna', {
+                                rowid: warna.rowid,
+                                warna: warna.warna,
+                                hex: warna.hex
+                            });
+
+                            db.transaction(function(t) {
+                                t.executeSql("insert into warna (warna, hex) values(?, ?)",
+                                    [warna.warna, warna.hex]
+                                )
+                            });
+                        })
+
+                        // UPDATE TIMESTAMP LOCAL KE TIMESTAMP SERVER //
+                        db.transaction(function(t) {
+                            t.executeSql("update timestamp set timestamp=? where rowid=1",
+                                [ini.timestampServer]
+                            )
+                        });
+
+                        ini.$.toastSukses.show();
+                    },
+                    error: function() { ini.$.toastGagal.show(); }
+                });
+            },
+
+            klikKonfigurasi: function() {
+                this.$.toastKonfigurasi.show();
+            },
+
+            konfigurasi: function() {
+                db.transaction(function(t) {
+                    t.executeSql("drop table if exists katalog");
+                    t.executeSql('create table katalog (nama unique, jenis, warna, keterangan, dicuci int)');
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K01', 'Kaos', 'Putih', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K02', 'Kaos', 'Putih', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K03', 'Kaos', 'Putih', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K04', 'Kaos', 'Putih', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K05', 'Kaos', 'Abu-Abu Terang', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K06', 'Kaos', 'Abu-Abu Gelap', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K07', 'Kaos', 'Abu-Abu Gelap', ', Jeddah', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K08', 'Kaos', 'Kuning', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K09', 'Kaos', 'Merah', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K10', 'Kaos', 'Hitam', ', Nautica', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('K11', 'Kaos', 'Hitam', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('J01', 'Jaket', 'Abu-Abu Terang', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('J02', 'Jaket', 'Hitam', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('P01', 'Polo', 'Abu-Abu Terang', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('P02', 'Polo', 'Biru Terang', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('P03', 'Polo', 'Biru', ', lengan panjang', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('P04', 'Polo', 'Biru Gelap', '', 0)")
+                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values('S01', 'Sweater', 'Putih', '', 0)")
+                
+                    t.executeSql("drop table if exists jenis")
+                    t.executeSql("create table jenis (nama unique, jenis unique, jumlah int)")
+                    t.executeSql("insert into jenis (nama, jenis, jumlah) values('J', 'Jaket', 2)")
+                    t.executeSql("insert into jenis (nama, jenis, jumlah) values('K', 'Kaos', 11)")
+                    t.executeSql("insert into jenis (nama, jenis, jumlah) values('P', 'Polo', 4)")
+                    t.executeSql("insert into jenis (nama, jenis, jumlah) values('S', 'Sweater', 1)")
+
+                    t.executeSql("drop table if exists warna");
+                    t.executeSql("create table warna (warna unique, hex unique)")
+                    t.executeSql("insert into warna (warna, hex) values('Putih', '#FFF')")
+                    t.executeSql("insert into warna (warna, hex) values('Abu-Abu Terang', '#999')")
+                    t.executeSql("insert into warna (warna, hex) values('Abu-Abu Gelap', '#595959')")
+                    t.executeSql("insert into warna (warna, hex) values('Kuning', '#ffd500')")
+                    t.executeSql("insert into warna (warna, hex) values('Biru Terang', '#99ccff')")
+                    t.executeSql("insert into warna (warna, hex) values('Biru', '#0080ff')")
+                    t.executeSql("insert into warna (warna, hex) values('Biru Gelap', '#003366')")
+                    t.executeSql("insert into warna (warna, hex) values('Merah', '#cc0033')")
+                    t.executeSql("insert into warna (warna, hex) values('Hitam', '#000')")
+
+                    t.executeSql("drop table if exists timestamp")
+                    t.executeSql("create table timestamp (timestamp integer)")
+                    t.executeSql("insert into timestamp (timestamp) values (?)", [Math.floor(Date.now() / 1000)])
+                }, function(){}, function(){location.reload();} )
+            },
+
+            klikHapus: function() {
+                this.$.toastHapus.show();
+            },
+
+            hapus: function() {
+                db.transaction(function(t) {
+                    t.executeSql("delete from katalog");
+                    t.executeSql("delete from jenis");
+                    t.executeSql("delete from warna");
+                    t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() / 1000)]);
+                }, function(){}, function(){location.reload();} );
+            }
+        });
+    })();
+</script>

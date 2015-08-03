@@ -1,0 +1,128 @@
+<dom-module id="tambah-jenis">
+    <style>
+
+        paper-button {
+            background: transparent;
+            color: #FFAB00;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        paper-input[label="Nama"] { width: 100px; margin-right: 20px; }
+
+        p {
+            color: #333;
+            margin-bottom: 0;
+        }
+
+        paper-toast { z-index: 9999; }
+
+        /**************** PAPER - MATERIAL ************************/
+        paper-material {
+            border-radius: 2px;
+            height: 100%;
+            padding: 16px 0 16px 0;
+            width: calc(98.66% - 16px);
+            margin: 16px auto;
+            background: white;
+        }
+
+        @media (min-width: 601px) {
+            paper-material {
+                width: calc(98% - 46px);
+                margin-bottom: 32px;
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            paper-material {
+                --menu-container-display: none;
+                width: calc(90.33% - 32px);
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+        /**********************************************************/
+    </style>
+
+
+
+    <template>
+        <paper-material>
+            <p class="paper-font-title">Tambah Jenis</p>  
+            <div class="horizontal layout">
+                <paper-input label="Nama" auto-validate pattern="[A-Z]" error-message="Huruf kapital" maxlength="1" value="{{inputNama}}"></paper-input>
+                <paper-input class="flex" label="Jenis" maxlength="16" value="{{inputJenis}}"></paper-input>
+            </div>
+            <div class="horizontal layout">
+                <span class="flex"></span>
+                <paper-button on-tap="tambah">Tambah</paper-button>
+            </div>
+        </paper-material>
+
+        <paper-toast id="toastKosong" text="Nama dan Jenis tidak boleh dikosongkan."></paper-toast>
+        <paper-toast id="toastGagal" text="Update database gagal."></paper-toast>
+        <paper-toast id="toastBerhasil" text="Penambahan jenis berhasil."></paper-toast>
+    </template>
+</dom-module>
+
+
+
+<script>
+    (function() {
+        Polymer({
+            is: 'tambah-jenis',
+
+            properties: {
+                jenis: { type: Array },
+                inputNama: String,
+                inputJenis: String
+            },
+
+            ready: function() {
+                this.reset();
+            },
+
+            reset: function() {
+                this.inputNama = "";
+                this.inputJenis = "";
+            },
+
+            tambah: function() {
+                if ( (this.inputNama != "") && (this.inputJenis != "") ) {
+                    var ini = this;
+                    db.transaction(
+                        function(t) {
+                            t.executeSql("insert into jenis (nama, jenis, jumlah) values (?, ?, ?)", 
+                                [ini.inputNama, ini.inputJenis, 0]
+                            );
+
+                            t.executeSql("update timestamp set timestamp=? where rowid=1",
+                                [Math.floor(Date.now() /1000)]
+                            );
+                        },  
+                        function(){ ini.$.toastGagal.show(); }, 
+                        function() { ini.update(); } 
+                    );
+                }
+
+                else { this.$.toastKosong.show(); }
+            },
+
+            update: function() {
+                this.push('jenis', {
+                    rowid: this.jenis.length + 1,
+                    nama: this.inputNama,
+                    jenis: this.inputJenis,
+                    jumlah: 0
+                });
+                this.$.toastBerhasil.show();
+                this.reset();
+            }
+
+
+        });
+    })();
+</script>

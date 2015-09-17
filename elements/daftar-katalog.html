@@ -5,6 +5,21 @@
             color: #FFAB00;
         }
 
+        span[role="button"] { 
+            color: #FFAB00;
+            margin-right: 10px;
+        }
+
+        paper-ripple { color: #FFAB00; }
+        h1 {margin: 0;}
+        p {
+            color: #333;
+            margin: 0;
+            text-transform: capitalize;
+        }
+        span.keterangan { text-transform: none; }
+
+        /**************** PAPER - MATERIAL ************************/
         paper-material {
             border-radius: 2px;
             height: 100%;
@@ -35,30 +50,26 @@
                 padding-right: 16px;
             }
         }
-
-        paper-ripple {color: #FFAB00; display: none;}
-        h1 {margin: 0;}
-        p {
-            color: #333;
-            margin: 0;
-            text-transform: capitalize;
-        }
-        span.keterangan { text-transform: none; }
+        /**********************************************************/
     </style>
 
 
 
     <template>
-        <template is="dom-repeat" items="{{katalog}}">
+        <template is="dom-repeat" items="{{katalog}}" sort="_sort">
             <template is="dom-if" if="{{!dicuci}}">
                 <template is="dom-if" if="{{!item.dicuci}}">
                     <paper-material class="vertical layout">
                         <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
-                        <p class="paper-font-title"><span>{{item.jenis}}</span> <span>{{item.warna}}</span><span class="keterangan">{{item.keterangan}}</span></p>
-                        <paper-ripple></paper-ripple>
+                        <p class="paper-font-title">
+                            <span>{{item.jenis}}</span>
+                            <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
+                        </p>
                         <div class="horizontal layout">
+                            <span role="button" class="paper-font-button" on-tap="edit">Edit</span>
+                            <span role="button" class="paper-font-button" on-tap="tentang">Tentang</span>
                             <span class="flex"></span>
-                            <paper-button noink class="paper-font-button" on-tap="cuci">Cuci</paper-button>
+                            <span role="button" class="paper-font-button" on-tap="cuci">Cuci</span>
                         </div>
                     </paper-material>
                 </template>
@@ -68,16 +79,23 @@
                 <template is="dom-if" if="{{item.dicuci}}">
                     <paper-material class="vertical layout">
                         <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
-                        <p class="paper-font-title"><span>{{item.jenis}}</span> <span>{{item.warna}}</span><span class="keterangan">{{item.keterangan}}</span></p>
-                        <paper-ripple></paper-ripple>
+                        <p class="paper-font-title">
+                            <span>{{item.jenis}}</span>
+                            <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
+                        </p>
                         <div class="horizontal layout">
+                            <span role="button" class="paper-font-button" on-tap="edit">Edit</span>
+                            <span role="button" class="paper-font-button" on-tap="tentang">Tentang</span>
                             <span class="flex"></span>
-                            <paper-button noink class="paper-font-button" on-tap="selesai">Selesai</paper-button>
+                            <span role="button" class="paper-font-button" on-tap="selesai">Selesai</span>
                         </div>
                     </paper-material>
                 </template>
             </template>
         </template>
+        
+        <edit-katalog trigger="{{triggerEdit}}" rowid="{{rowid}}" warna="{{warna}}" keterangan="{{keterangan}}" daftarwarna="{{daftarwarna}}" katalog="{{katalog}}"></edit-katalog>
+        <tentang-katalog trigger="{{triggerTentang}}" rowid="{{rowid}}" nama="{{nama}}" timeselesai="{{timeselesai}}"></tentang-katalog>
     </template>
 </dom-module>
 
@@ -87,15 +105,42 @@
     (function() {
         Polymer({
             is: 'daftar-katalog',
-
             properties: {
                 dicuci: { type: Boolean, value: false },
-                katalog: { type: Array, notify: true }
+                katalog: { type: Array, notify: true },
+                daftarwarna: Array,
+                triggerEdit: Boolean,
+                triggerTentang: Boolean,
+                rowid: Number,
+                nama: String,
+                warna: String,
+                keterangan: String,
+                timeselesai: Number
             },
+
 
             ready: function() {
 
             },
+
+
+            edit: function(e) {
+                this.triggerEdit = true;
+                this.rowid = e.model.item.rowid;
+                this.warna = e.model.item.warna;
+                this.keterangan = e.model.item.keterangan;
+            },
+
+
+            tentang: function(e) {
+                 this.triggerTentang = true;
+                 this.rowid = e.model.item.rowid;
+                 this.nama = e.model.item.nama;
+
+                 var date = new Date(e.model.item.timeselesai*1000);
+                 this.timeselesai = (date.getDate() < 10 ? '0' : '') + date.getDate() + '/' + (date.getMonth()+1 < 10 ? '0' : '') + (date.getMonth()+1) + '/' + (date.getFullYear()-2000);
+            },
+
 
             cuci: function(e) {
                 var rowid = e.model.item.rowid;
@@ -105,17 +150,25 @@
                 });
             },
 
+
             selesai: function(e) {
                 var rowid = e.model.item.rowid;
                 var ini = this;
                 db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=? where rowid=?", [0, rowid], ini.update(rowid, 0));
+                    t.executeSql("update katalog set dicuci=?, timeselesai=? where rowid=?", [0, Math.floor(Date.now()/1000),rowid], ini.update(rowid, 0));
                 });
             },
 
+
             update: function(rowid, dicuci) {
                 this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
+                this.set(['katalog', rowid - 1, 'timeselesai'], Math.floor(Date.now() / 1000));
             }, 
+
+
+            _sort: function(a, b) {
+                return a.nama < b.nama ? -1 : 1;
+            }
 
 
         });

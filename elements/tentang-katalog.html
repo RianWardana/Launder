@@ -1,0 +1,83 @@
+<dom-module id="tentang-katalog">
+    <style>
+        paper-dialog {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 0;
+            margin: 0; 
+        }
+
+        .horizontal.center-justified.layout {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .paper-font-display1 { margin-top: 14px; margin-bottom: 0; }
+        .paper-font-body1 { margin: 0; }
+
+        paper-button {
+            color: #FFAB00;
+            margin: 0;
+            text-align: right;
+        }
+    </style>
+
+
+
+    <template>
+
+        <paper-dialog modal id="dialog" style="max-height: 200px;">
+            <h2>Tentang <span>{{nama}}</span></h2>
+            
+            <div class="horizontal center-justified layout">
+                <p class="paper-font-display1">{{timeselesai}}</p>
+            </div>
+            <div class="horizontal center-justified layout">
+                <p class="paper-font-body1">Terakhir selesai dicuci</p>
+            </div>
+
+            <div class="buttons">
+                <paper-button dialog-confirm>Tutup</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="toastGagal" text="Edit katalog gagal."></paper-toast>
+
+    </template>
+</dom-module>
+
+
+
+
+<script src="jquery.min.js"></script>
+<script>
+    (function() {
+        Polymer({
+            is: 'tentang-katalog',
+            properties: {
+                daftarwarna: Array,
+                katalog: { type: Array, notify: true },
+                trigger: { type: Boolean, notify: true, observer: '_bukaDialog' },
+                rowid: Number,
+                warna: String,
+                keterangan: String,
+                timeselesai: Number
+            },
+
+
+            ready: function() {
+
+            },
+
+
+            _bukaDialog: function() {
+                this.$.dialog.open();
+                this.trigger = false;
+            }
+
+
+      });
+    })();
+</script>

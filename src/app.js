@@ -30,7 +30,6 @@
   };
 
 
-
 /************************************************ LAUNDER SCRIPT **********************************************/
 
     app.halaman_sekarang = "Katalog";
@@ -40,16 +39,17 @@
     // ISI KATALOG DARI DATABASE LOKAL //
     app.katalog = [];
     db.transaction(function(t) {
-      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci from katalog order by nama", [], function(t, result) {
+      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci, timeselesai from katalog", [], function(t, result) {
           var len = result.rows.length;
           for(var i = 0; i < len; i++) {
               app.push('katalog', { 
-                  rowid: i + 1,
+                  rowid: result.rows.item(i).rowid,
                   nama: result.rows.item(i).nama,
                   jenis: result.rows.item(i).jenis,
                   warna: result.rows.item(i).warna, 
                   keterangan: result.rows.item(i).keterangan,
-                  dicuci: result.rows.item(i).dicuci
+                  dicuci: result.rows.item(i).dicuci,
+                  timeselesai: result.rows.item(i).timeselesai
               });
           }
       });

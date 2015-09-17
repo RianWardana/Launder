@@ -8,11 +8,10 @@
         <meta name="theme-color" content="#03A9F4">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="application-name" content="Launder">
-        <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
         <title>Launder</title>
         
         <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-        <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <!-- <script type="text/javascript" src="cordova.js"></script> -->
         <link rel="import" href="elements/imports.html">
 
         <style>
@@ -31,8 +30,8 @@
 
             paper-fab {
                 position: fixed;
-                right: 5%;
-                bottom: 5%;
+                right: 20px;
+                bottom: 20px;
             }
 
             @media (max-width: 600px) {
@@ -68,13 +67,13 @@
                             
 
                             <section halaman="Katalog">
-                                <daftar-katalog katalog="{{katalog}}"></daftar-katalog>
+                                <daftar-katalog katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
                                 <paper-fab icon="add" on-click="hello"></paper-fab>
                             </section>
 
 
                             <section halaman="Dalam Cucian">
-                                <daftar-katalog dicuci katalog="{{katalog}}"></daftar-katalog>
+                                <daftar-katalog dicuci katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
                             </section>
 
 

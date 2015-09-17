@@ -1,0 +1,131 @@
+<dom-module id="edit-katalog">
+    <style>
+        paper-dialog {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 0;
+            margin: 0; 
+        }
+        
+        paper-dropdown-menu {
+            left: 0;
+            right: 0;
+        }
+
+        paper-button {
+            color: #FFAB00;
+            margin: 0;
+        }
+
+        paper-button.dropdown-trigger {
+            background: #FFAB00;
+            color: #FFF;
+            margin: 0;
+            width: 100px;
+            
+        }
+
+        paper-input[disabled] {
+            margin-top: 9px;
+        }
+
+        paper-input {
+            padding: 0 8px 0;
+        }
+
+        paper-toast { z-index: 999; }
+    </style>
+
+
+
+    <template>
+
+        <paper-dialog modal id="dialog" style="max-height: 2000px;">
+            <h2>Edit Katalog</h2>
+
+            <div class="vertical layout" style="margin-top: 10px;">
+                <div class="horizontal layout">
+                    <paper-menu-button vertical-align="bottom" horizontal-align="left" label="Warna">
+                    <paper-button class="dropdown-trigger flex" raised>Warna</paper-button>
+                        <paper-menu class="dropdown-content" selected="{{warna}}" attr-for-selected="nama">
+                            <template is="dom-repeat" items="{{daftarwarna}}">
+                                <paper-item nama="{{item.warna}}">{{item.warna}}</paper-item>
+                            </template>
+                        </paper-menu>
+                    </paper-menu-button>
+                    <paper-input disabled no-label-float class="flex" label="Warna" value="{{warna}}"></paper-input>
+                </div>
+                <paper-input no-label-float label="Keterangan" value="{{keterangan}}"></paper-input>
+            </div>
+
+            <div class="buttons">
+                <paper-button dialog-confirm>Batal</paper-button>
+                <paper-button dialog-confirm on-tap="hapus">Hapus</paper-button>
+                <paper-button dialog-confirm on-tap="simpan">Simpan</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="toastGagal" text="Edit katalog gagal."></paper-toast>
+
+    </template>
+</dom-module>
+
+
+
+
+<script src="jquery.min.js"></script>
+<script>
+    (function() {
+        Polymer({
+            is: 'edit-katalog',
+            properties: {
+                daftarwarna: Array,
+                katalog: { type: Array, notify: true },
+                trigger: { type: Boolean, notify: true, observer: '_bukaDialog' },
+                rowid: Number,
+                warna: String,
+                keterangan: String
+            },
+
+
+            ready: function() {
+               
+            },
+
+
+            _bukaDialog: function() {
+                this.$.dialog.open();
+                this.trigger = false;
+            },
+
+
+            simpan: function() {
+                console.log('Simpan ' + this.rowid);
+
+                var ini = this;
+                db.transaction(
+                    function(t) {
+                        t.executeSql("update katalog set warna=?, keterangan=? where rowid=?", 
+                            [ini.warna, ini.keterangan, ini.rowid]
+                        );
+
+                        t.executeSql("update timestamp set timestamp=? where rowid=1",
+                            [Math.floor(Date.now() /1000)]
+                        );
+                    },  
+                    function(){ ini.$.toastGagal.show(); }, 
+                    function() { ini.update(); } 
+                );
+            },
+
+
+            update: function() {
+                this.set(['katalog', this.rowid - 1, 'warna'], this.warna);
+                this.set(['katalog', this.rowid - 1, 'keterangan'], this.keterangan);
+            }
+
+      });
+    })();
+</script>

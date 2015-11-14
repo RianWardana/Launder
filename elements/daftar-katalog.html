@@ -19,6 +19,10 @@
         }
         span.keterangan { text-transform: none; }
 
+        .horizontal.layout {
+        	margin-top: -5px;
+        }
+
         /**************** PAPER - MATERIAL ************************/
         paper-material {
             border-radius: 2px;
@@ -60,7 +64,7 @@
             <template is="dom-if" if="{{!dicuci}}">
                 <template is="dom-if" if="{{!item.dicuci}}">
                     <paper-material class="vertical layout">
-                        <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
+                        <!-- <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1> -->
                         <p class="paper-font-title">
                             <span>{{item.jenis}}</span>
                             <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
@@ -78,7 +82,7 @@
             <template is="dom-if" if="{{dicuci}}">
                 <template is="dom-if" if="{{item.dicuci}}">
                     <paper-material class="vertical layout">
-                        <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1>
+                        <!-- <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1> -->
                         <p class="paper-font-title">
                             <span>{{item.jenis}}</span>
                             <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
@@ -146,7 +150,8 @@
                 var rowid = e.model.item.rowid;
                 var ini = this;
                 db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=? where rowid=?", [1, rowid], ini.update(rowid, 1));
+                    t.executeSql("update katalog set dicuci=?, timeselesai=? where rowid=?", [1, Math.floor(Date.now()/1000), rowid], ini.update(rowid, 1));
+                    t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
                 });
             },
 
@@ -155,14 +160,15 @@
                 var rowid = e.model.item.rowid;
                 var ini = this;
                 db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=?, timeselesai=? where rowid=?", [0, Math.floor(Date.now()/1000),rowid], ini.update(rowid, 0));
+                    t.executeSql("update katalog set dicuci=? where rowid=?", [0, rowid], ini.update(rowid, 0));
+                    t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
                 });
             },
 
 
             update: function(rowid, dicuci) {
                 this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
-                this.set(['katalog', rowid - 1, 'timeselesai'], Math.floor(Date.now() / 1000));
+                if (dicuci) this.set(['katalog', rowid - 1, 'timeselesai'], Math.floor(Date.now() / 1000));
             }, 
 
 

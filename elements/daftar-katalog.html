@@ -64,7 +64,6 @@
             <template is="dom-if" if="{{!dicuci}}">
                 <template is="dom-if" if="{{!item.dicuci}}">
                     <paper-material class="vertical layout">
-                        <!-- <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1> -->
                         <p class="paper-font-title">
                             <span>{{item.jenis}}</span>
                             <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
@@ -82,7 +81,6 @@
             <template is="dom-if" if="{{dicuci}}">
                 <template is="dom-if" if="{{item.dicuci}}">
                     <paper-material class="vertical layout">
-                        <!-- <h1 class="paper-font-display-1"><span>{{item.nama}}</span></h1> -->
                         <p class="paper-font-title">
                             <span>{{item.jenis}}</span>
                             <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
@@ -99,7 +97,7 @@
         </template>
         
         <edit-katalog trigger="{{triggerEdit}}" rowid="{{rowid}}" warna="{{warna}}" keterangan="{{keterangan}}" daftarwarna="{{daftarwarna}}" katalog="{{katalog}}"></edit-katalog>
-        <tentang-katalog trigger="{{triggerTentang}}" rowid="{{rowid}}" nama="{{nama}}" timeselesai="{{timeselesai}}"></tentang-katalog>
+        <tentang-katalog trigger="{{triggerTentang}}" rowid="{{rowid}}" nama="{{nama}}" terakhir_dicuci="{{terakhir_dicuci}}"></tentang-katalog>
     </template>
 </dom-module>
 
@@ -119,7 +117,7 @@
                 nama: String,
                 warna: String,
                 keterangan: String,
-                timeselesai: Number
+                terakhir_dicuci: Number
             },
 
 
@@ -141,8 +139,8 @@
                  this.rowid = e.model.item.rowid;
                  this.nama = e.model.item.nama;
 
-                 var date = new Date(e.model.item.timeselesai*1000);
-                 this.timeselesai = (date.getDate() < 10 ? '0' : '') + date.getDate() + '/' + (date.getMonth()+1 < 10 ? '0' : '') + (date.getMonth()+1) + '/' + (date.getFullYear()-2000);
+                 var date = new Date(e.model.item.terakhir_dicuci*1000);
+                 this.terakhir_dicuci = (date.getDate() < 10 ? '0' : '') + date.getDate() + '/' + (date.getMonth()+1 < 10 ? '0' : '') + (date.getMonth()+1) + '/' + (date.getFullYear()-2000);
             },
 
 
@@ -150,7 +148,7 @@
                 var rowid = e.model.item.rowid;
                 var ini = this;
                 db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=?, timeselesai=? where rowid=?", [1, Math.floor(Date.now()/1000), rowid], ini.update(rowid, 1));
+                    t.executeSql("update katalog set dicuci=?, terakhir_dicuci=? where rowid=?", [1, Math.floor(Date.now()/1000), rowid], ini.update(rowid, 1));
                     t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
                 });
             },
@@ -168,12 +166,14 @@
 
             update: function(rowid, dicuci) {
                 this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
-                if (dicuci) this.set(['katalog', rowid - 1, 'timeselesai'], Math.floor(Date.now() / 1000));
+                if (dicuci) this.set(['katalog', rowid - 1, 'terakhir_dicuci'], Math.floor(Date.now() / 1000));
             }, 
 
 
             _sort: function(a, b) {
-                return a.nama < b.nama ? -1 : 1;
+                if ((a.jenis == b.jenis) && (a.warna == b.warna)) return a.keterangan < b.keterangan ? -1 : 1;
+                else if (a.jenis == b.jenis) return a.warna < b.warna ? -1 : 1;
+                else return a.jenis < b.jenis ? -1 : 1;
             }
 
 

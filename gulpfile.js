@@ -21,7 +21,7 @@ gulp.task('vulcanize', function() {
 		}))
 		.on('error', console.error.bind(console))
 		.pipe(rename('index.html'))
-		.pipe(gulp.dest(''))
+		.pipe(gulp.dest('../cordova/www'))
 })
 
 

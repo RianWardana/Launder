@@ -17,9 +17,9 @@
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
-  window.addEventListener('WebComponentsReady', function() {
-    // imports are loaded and elements have been registered
-  });
+  // window.addEventListener('WebComponentsReady', function() {
+  //   // imports are loaded and elements have been registered
+  // });
 
   // Close drawer after menu item is selected if drawerPanel is narrow
   app.onMenuSelect = function() {
@@ -29,17 +29,16 @@
     }
   };
 
-
 /************************************************ LAUNDER SCRIPT **********************************************/
-
-    app.halaman_sekarang = "Katalog";
+    
+    app.halaman_sekarang = "Katalog"
     app.hello = function() { app.halaman_sekarang = "Tambah"; }
     db = window.openDatabase('launder', '1.0', 'Launder', 200000)
 
     // ISI KATALOG DARI DATABASE LOKAL //
     app.katalog = [];
     db.transaction(function(t) {
-      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci, timeselesai from katalog", [], function(t, result) {
+      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci, terakhir_dicuci from katalog", [], function(t, result) {
           var len = result.rows.length;
           for(var i = 0; i < len; i++) {
               app.push('katalog', { 
@@ -49,7 +48,7 @@
                   warna: result.rows.item(i).warna, 
                   keterangan: result.rows.item(i).keterangan,
                   dicuci: result.rows.item(i).dicuci,
-                  timeselesai: result.rows.item(i).timeselesai
+                  terakhir_dicuci: result.rows.item(i).terakhir_dicuci
               });
           }
       });

@@ -2,7 +2,7 @@
     <style>
         paper-dialog {
             position: fixed;
-            top: 20px;
+            top: 177px;
             left: 20px;
             right: 20px;
             padding: 0;
@@ -24,7 +24,6 @@
             color: #FFF;
             margin: 0;
             width: 100px;
-            
         }
 
         paper-input[disabled] {
@@ -91,13 +90,23 @@
 
 
             ready: function() {
-               
+                
             },
 
 
             _bukaDialog: function() {
-                this.$.dialog.open();
-                this.trigger = false;
+                this.$.dialog.open()
+                this.trigger = false
+
+                var dialogHeight
+                var dialogTop
+                var dialog = Polymer.dom(this.root).querySelector("#dialog")
+
+                $(window).resize(function() {
+                    dialogHeight = $(dialog).height()
+                    dialogTop = (window.innerHeight - dialogHeight) / 2
+                    $(dialog).css("top", dialogTop + "px")
+                })
             },
 
 
@@ -125,7 +134,6 @@
                 this.set(['katalog', this.rowid - 1, 'warna'], this.warna);
                 this.set(['katalog', this.rowid - 1, 'keterangan'], this.keterangan);
             }
-
-      });
+        });
     })();
 </script>

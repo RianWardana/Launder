@@ -61,20 +61,22 @@
 
     <template>
         <template is="dom-repeat" items="{{katalog}}" sort="_sort">
-            <template is="dom-if" if="{{bersih}}">
+            <template is="dom-if" if="{{tidakdicuci}}">
                 <template is="dom-if" if="{{!item.dicuci}}">
-                    <paper-material class="vertical layout">
-                        <p class="paper-font-title">
-                            <span>{{item.jenis}}</span>
-                            <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
-                        </p>
-                        <div class="horizontal layout">
-                            <span role="button" class="paper-font-button" on-tap="edit">Edit</span>
-                            <span role="button" class="paper-font-button" on-tap="tentang">Tentang</span>
-                            <span class="flex"></span>
-                            <span role="button" class="paper-font-button" on-tap="cuci">Cuci</span>
-                        </div>
-                    </paper-material>
+                    <template is="dom-if" if="{{!item.laundry}}">
+                        <paper-material class="vertical layout">
+                            <p class="paper-font-title">
+                                <span>{{item.jenis}}</span>
+                                <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
+                            </p>
+                            <div class="horizontal layout">
+                                <span role="button" class="paper-font-button" on-tap="edit">Edit</span>
+                                <span role="button" class="paper-font-button" on-tap="tentang">Tentang</span>
+                                <span class="flex"></span>
+                                <span role="button" class="paper-font-button" on-tap="cuci">Cuci</span>
+                            </div>
+                        </paper-material>
+                    </template>
                 </template>
             </template>
 
@@ -94,8 +96,26 @@
                     </paper-material>
                 </template>
             </template>
+
+            <template is="dom-if" if="{{laundry}}">
+                <template is="dom-if" if="{{item.laundry}}">
+                    <paper-material class="vertical layout">
+                        <p class="paper-font-title">
+                            <span>{{item.jenis}}</span>
+                            <span>{{item.warna}}</span><template is="dom-if" if="{{item.keterangan}}">, <span class="keterangan">{{item.keterangan}}</span></template>
+                        </p>
+                        <div class="horizontal layout">
+                            <span role="button" class="paper-font-button" on-tap="edit">Edit</span>
+                            <span role="button" class="paper-font-button" on-tap="tentang">Tentang</span>
+                            <span class="flex"></span>
+                            <span role="button" class="paper-font-button" on-tap="selesai">Selesai</span>
+                        </div>
+                    </paper-material>
+                </template>
+            </template>
         </template>
         
+        <cuci-katalog trigger="{{triggerCuci}}" rowid="{{rowid}}" katalog="{{katalog}}"></cuci-katalog>
         <edit-katalog trigger="{{triggerEdit}}" rowid="{{rowid}}" warna="{{warna}}" keterangan="{{keterangan}}" daftarwarna="{{daftarwarna}}" katalog="{{katalog}}"></edit-katalog>
         <tentang-katalog trigger="{{triggerTentang}}" rowid="{{rowid}}" nama="{{nama}}" terakhir_dicuci="{{terakhir_dicuci}}"></tentang-katalog>
     </template>
@@ -108,11 +128,12 @@
         Polymer({
             is: 'daftar-katalog',
             properties: {
-                bersih: { type: Boolean, value: false },
+                tidakdicuci: { type: Boolean, value: false },
                 dicuci: { type: Boolean, value: false },
                 laundry: { type: Boolean, value: false },
                 katalog: { type: Array, notify: true },
                 daftarwarna: Array,
+                triggerCuci: Boolean,
                 triggerEdit: Boolean,
                 triggerTentang: Boolean,
                 rowid: Number,
@@ -147,12 +168,15 @@
 
 
             cuci: function(e) {
-                var rowid = e.model.item.rowid;
-                var ini = this;
-                db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=?, terakhir_dicuci=? where rowid=?", [1, Math.floor(Date.now()/1000), rowid], ini.update(rowid, 1));
-                    t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
-                });
+                this.triggerCuci = true
+                this.rowid = e.model.item.rowid;
+
+                // var rowid = e.model.item.rowid;
+                // var ini = this;
+                // db.transaction(function(t) {
+                //     t.executeSql("update katalog set dicuci=?, terakhir_dicuci=? where rowid=?", [1, Math.floor(Date.now()/1000), rowid], ini.update(rowid, 1));
+                //     t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
+                // });
             },
 
 
@@ -160,14 +184,15 @@
                 var rowid = e.model.item.rowid;
                 var ini = this;
                 db.transaction(function(t) {
-                    t.executeSql("update katalog set dicuci=? where rowid=?", [0, rowid], ini.update(rowid, 0));
+                    t.executeSql("update katalog set dicuci=?, laundry=? where rowid=?", [0, 0, rowid], ini.update(rowid, 0, 0));
                     t.executeSql("update timestamp set timestamp=? where rowid=1", [Math.floor(Date.now() /1000)] );
                 });
             },
 
 
-            update: function(rowid, dicuci) {
+            update: function(rowid, dicuci, laundry) {
                 this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
+                this.set(['katalog', rowid - 1, 'laundry'], laundry);
                 if (dicuci) this.set(['katalog', rowid - 1, 'terakhir_dicuci'], Math.floor(Date.now() / 1000));
             }, 
 

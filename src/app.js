@@ -35,10 +35,10 @@
     app.hello = function() { app.halaman_sekarang = "Tambah"; }
     db = window.openDatabase('launder', '1.0', 'Launder', 200000)
 
-    // ISI KATALOG DARI DATABASE LOKAL //
+    // ISI ARRAY KATALOG DARI DATABASE LOKAL //
     app.katalog = [];
     db.transaction(function(t) {
-      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci, terakhir_dicuci from katalog", [], function(t, result) {
+      t.executeSql("select rowid, nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci from katalog", [], function(t, result) {
           var len = result.rows.length;
           for(var i = 0; i < len; i++) {
               app.push('katalog', { 
@@ -48,13 +48,14 @@
                   warna: result.rows.item(i).warna, 
                   keterangan: result.rows.item(i).keterangan,
                   dicuci: result.rows.item(i).dicuci,
+                  laundry: result.rows.item(i).laundry,
                   terakhir_dicuci: result.rows.item(i).terakhir_dicuci
               });
           }
       });
     });
 
-    // ISI JENIS DARI DATABASE LOKAL //
+    // ISI ARRAY JENIS DARI DATABASE LOKAL //
     app.jenis = [];
     db.transaction(function(t) {
       t.executeSql("select rowid, nama, jenis, jumlah from jenis order by nama asc", [], function(t, result) {
@@ -70,7 +71,7 @@
       });
     });
 
-    // ISI WARNA DARI DATABASE LOKAL //
+    // ISI ARRAY WARNA DARI DATABASE LOKAL //
     app.warna = [];
     db.transaction(function(t) {
         t.executeSql("select rowid, warna, hex from warna order by warna asc", [], function(t, result) {

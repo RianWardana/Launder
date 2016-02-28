@@ -2,7 +2,7 @@
     <style>
         paper-dialog {
             position: fixed;
-            top: 20px;
+            top: 193px;
             left: 20px;
             right: 20px;
             padding: 0;
@@ -73,8 +73,18 @@
 
 
             _bukaDialog: function() {
-                this.$.dialog.open();
-                this.trigger = false;
+                this.$.dialog.open()
+                this.trigger = false
+
+                var dialogHeight
+                var dialogTop
+                var dialog = Polymer.dom(this.root).querySelector("#dialog")
+
+                $(window).resize(function() {
+                    dialogHeight = $(dialog).height()
+                    dialogTop = (window.innerHeight - dialogHeight) / 2
+                    $(dialog).css("top", dialogTop + "px")
+                })
             }
 
 

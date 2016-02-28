@@ -61,7 +61,7 @@
 
     <template>
         <template is="dom-repeat" items="{{katalog}}" sort="_sort">
-            <template is="dom-if" if="{{!dicuci}}">
+            <template is="dom-if" if="{{bersih}}">
                 <template is="dom-if" if="{{!item.dicuci}}">
                     <paper-material class="vertical layout">
                         <p class="paper-font-title">
@@ -108,7 +108,9 @@
         Polymer({
             is: 'daftar-katalog',
             properties: {
+                bersih: { type: Boolean, value: false },
                 dicuci: { type: Boolean, value: false },
+                laundry: { type: Boolean, value: false },
                 katalog: { type: Array, notify: true },
                 daftarwarna: Array,
                 triggerEdit: Boolean,

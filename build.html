@@ -52,6 +52,7 @@
                     <paper-menu selected="{{halaman_sekarang}}" attr-for-selected="halaman" on-iron-select="onMenuSelect">
                         <paper-item halaman="Katalog">Katalog</paper-item>
                         <paper-item halaman="Dalam Cucian">Dalam Cucian</paper-item>
+                        <paper-item halaman="Laundry">Laundry</paper-item>
                         <paper-item halaman="Pengaturan">Pengaturan</paper-item>
                     </paper-menu>
                 </div>
@@ -69,7 +70,7 @@
                             
 
                             <section halaman="Katalog">
-                                <daftar-katalog katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
+                                <daftar-katalog bersih katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
                                 <paper-fab icon="add" on-click="hello"></paper-fab>
                             </section>
 
@@ -78,6 +79,9 @@
                                 <daftar-katalog dicuci katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
                             </section>
 
+                            <section halaman="Laundry">
+                                <daftar-katalog laundry katalog="{{katalog}}" daftarwarna="{{warna}}"></daftar-katalog>
+                            </section>
 
                             <section halaman="Tambah">
                                 <tambah-katalog katalog="{{katalog}}" jenis="{{jenis}}" warna="{{warna}}"></tambah-katalog>

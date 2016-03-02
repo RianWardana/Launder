@@ -14,7 +14,7 @@ bower install
 #### 2. Install Gulp dan plugin-plugin nya dengan NPM
 Pada program terminal, tuliskan:
 ```
-bower install
+npm install
 ```
 
 

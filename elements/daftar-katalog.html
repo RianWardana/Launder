@@ -11,31 +11,42 @@
         }
 
         paper-ripple { color: #FFAB00; }
+
         h1 {margin: 0;}
+
         p {
             color: #333;
             margin: 0;
             text-transform: capitalize;
         }
+
         span.keterangan { text-transform: none; }
 
         .horizontal.layout {
         	margin-top: -5px;
         }
 
-        /**************** PAPER - MATERIAL ************************/
+        /**********************************************************/
         paper-material {
             border-radius: 2px;
             height: 100%;
             padding: 16px 0 16px 0;
-            width: calc(98.66% - 16px);
             margin: 16px auto;
             background: white;
         }
 
         @media (min-width: 601px) {
+            .paper-font-button {
+                margin-bottom: 5px;
+            }
+
+            .paper-font-title {
+                margin-bottom: 10px;
+                margin-top: 5px;
+            }
+
             paper-material {
-                width: calc(98% - 46px);
+                width: calc(90% - 46px);
                 margin-bottom: 32px;
                 padding-left: 30px;
                 padding-right: 30px;

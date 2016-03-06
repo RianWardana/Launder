@@ -22,6 +22,14 @@
             margin: 0;
             text-align: right;
         }
+
+        /**********************************************************************/
+        @media (min-width: 601px) {
+            paper-dialog {
+                width: 350px;
+            }
+        }
+        /**********************************************************************/
     </style>
 
 
@@ -77,14 +85,28 @@
                 this.trigger = false
 
                 var dialogHeight
+                var dialogWidth
+                var dialogLeft
                 var dialogTop
                 var dialog = Polymer.dom(this.root).querySelector("#dialog")
 
-                $(window).resize(function() {
+                function setPosition() {
                     dialogHeight = $(dialog).height()
                     dialogTop = (window.innerHeight - dialogHeight) / 2
                     $(dialog).css("top", dialogTop + "px")
+
+                    if (window.innerWidth > 600) {
+                        dialogWidth = $(dialog).width()
+                        dialogLeft = (window.innerWidth - dialogWidth) / 2
+                        $(dialog).css("margin-left", dialogLeft + "px")
+                    } else $(dialog).css("margin-left", 0 + "px")
+                }
+
+                $(window).resize(function() {
+                    setPosition()
                 })
+
+                setPosition()
             }
 
 

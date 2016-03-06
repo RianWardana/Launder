@@ -35,6 +35,14 @@
         }
 
         paper-toast { z-index: 999; }
+
+        /**********************************************************************/
+        @media (min-width: 601px) {
+            paper-dialog {
+                width: 350px;
+            }
+        }
+        /**********************************************************************/
     </style>
 
 
@@ -47,8 +55,8 @@
             <div class="vertical layout" style="margin-top: 10px;">
                 <div class="horizontal layout">
                     <paper-menu-button vertical-align="bottom" horizontal-align="left" label="Warna">
-                    <paper-button class="dropdown-trigger flex" raised>Warna</paper-button>
-                        <paper-menu class="dropdown-content" selected="{{warna}}" attr-for-selected="nama">
+                    <paper-button layered class="layered dropdown-trigger flex" raised>Warna</paper-button>
+                        <paper-menu layered class="layered dropdown-content" selected="{{warna}}" attr-for-selected="nama">
                             <template is="dom-repeat" items="{{daftarwarna}}">
                                 <paper-item nama="{{item.warna}}">{{item.warna}}</paper-item>
                             </template>
@@ -97,16 +105,34 @@
             _bukaDialog: function() {
                 this.$.dialog.open()
                 this.trigger = false
-
+                
                 var dialogHeight
+                var dialogWidth
+                var dialogLeft
                 var dialogTop
                 var dialog = Polymer.dom(this.root).querySelector("#dialog")
 
-                $(window).resize(function() {
+                function setPositionVertical() {
                     dialogHeight = $(dialog).height()
                     dialogTop = (window.innerHeight - dialogHeight) / 2
                     $(dialog).css("top", dialogTop + "px")
+                }
+
+                function setPositionHorizontal() {
+                    if (window.innerWidth > 600) {
+                        dialogWidth = $(dialog).width()
+                        dialogLeft = (window.innerWidth - dialogWidth) / 2
+                        $(dialog).css("margin-left", dialogLeft + "px")
+                    } else $(dialog).css("margin-left", 0 + "px")
+                }
+
+                $(window).resize(function() {
+                    setPositionVertical()
+                    setPositionHorizontal()
                 })
+
+                setPositionVertical()
+                setPositionHorizontal()
             },
 
 

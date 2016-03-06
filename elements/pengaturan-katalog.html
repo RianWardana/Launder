@@ -15,19 +15,18 @@
         paper-toast { z-index: 999; }
         span[role="button"] { color: #FFAB00; margin: 10px; }
 
-    /************************* PAPER MATERIAL *****************************/
+    /**********************************************************************/
         paper-material {
             border-radius: 2px;
             height: 100%;
             padding: 16px 0 16px 0;
-            width: calc(98.66% - 16px);
             margin: 16px auto;
             background: white;
         }
 
         @media (min-width: 601px) {
             paper-material {
-                width: calc(98% - 46px);
+                width: calc(90% - 46px);
                 margin-bottom: 32px;
                 padding-left: 30px;
                 padding-right: 30px;
@@ -282,73 +281,74 @@
 
 
                 	
-                    t.executeSql("drop table if exists katalog")
-                    t.executeSql("create table katalog (nama unique, jenis, warna, keterangan, dicuci int, laundry int, terakhir_dicuci integer)")
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C06', 'Celana', 'Abu-Abu Gelap', 'pagi', 0, 0, 1455486450 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C07', 'Celana', 'Abu-Abu Gelap', 'sore', 0, 0, 1455965978 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C05', 'Celana', 'Abu-Abu Gelap', 'The Executive', 0, 0, 1446983889 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C04', 'Celana', 'Biru', 'pendek', 1, 0, 1456640355 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C03', 'Celana', 'Coklat', 'pendek', 0, 0, 1456069278 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C01', 'Celana', 'Jeans', 'panjang', 0, 0, 1456495823 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C02', 'Celana', 'Khaki', 'panjang', 1, 0, 1456660542 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H02', 'Handuk', 'Abu-Abu Gelap', '', 0, 0, 1456091309 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H03', 'Handuk', 'Coklat', '', 0, 1, 1456450642 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H04', 'Handuk', 'Hijau', '', 0, 0, 1448676932 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H01', 'Handuk', 'Hijau Terang', '', 0, 0, 1455965989 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'J01', 'Jaket', 'Abu-Abu Terang', '', 0, 0, 1455717032 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'J02', 'Jaket', 'Hitam', '', 0, 0, 1456495827 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K06', 'Kaos', 'Abu-Abu Gelap', '', 0, 0, 1450491562 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K07', 'Kaos', 'Abu-Abu Gelap', 'Jeddah', 1, 0, 1456574151 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K05', 'Kaos', 'Abu-Abu Terang', '', 0, 0, 1440753212 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K15', 'Kaos', 'Biru Gelap', 'MADK', 0, 0, 1456010370 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K13', 'Kaos', 'Hitam', '', 0, 0, 1454901544 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K14', 'Kaos', 'Hitam', 'Bertanda', 0, 1, 1456450647 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K17', 'Kaos', 'Hitam', 'Gardematon', 0, 0, 1456495830 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K16', 'Kaos', 'Hitam', 'Google', 1, 0, 1455717025 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K11', 'Kaos', 'Hitam', 'Nautica', 1, 0, 1456640345 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K12', 'Kaos', 'Hitam', 'Solop', 0, 0, 1455717022 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K09', 'Kaos', 'Kuning', '', 0, 0, 1455849569 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K08', 'Kaos', 'Kuning', 'No Fear', 0, 0, 1448676943 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K10', 'Kaos', 'Merah', '', 0, 0, 1454901549 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K03', 'Kaos', 'Putih', '', 0, 0, 1446205242 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K04', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K01', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K02', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P07', 'Polo', 'Abu-Abu Gelap', 'Van Heusen', 0, 1, 1456450657 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P01', 'Polo', 'Abu-Abu Terang', '', 0, 0, 1449499403 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P06', 'Polo', 'Biru', 'lengan panjang', 1, 0, 1456574157 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P03', 'Polo', 'Biru Gelap', '', 0, 1, 1456450661 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P02', 'Polo', 'Biru Terang', '', 0, 0, 1455252970 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P08', 'Polo', 'Hijau', 'lengan panjang', 0, 0, 1452231789 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P05', 'Polo', 'Hijau', 'Van Heusen', 0, 0, 1440753212 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P04', 'Polo', 'Hitam', '', 0, 0, 1449235500 )") 
-                    t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'S01', 'Sweater', 'Putih', '', 0, 0, 1440753212 )") 
+t.executeSql("drop table if exists katalog")
+t.executeSql("create table katalog (nama unique, jenis, warna, keterangan, dicuci int, laundry int, terakhir_dicuci integer)")
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C06', 'Celana', 'Abu-Abu Gelap', 'pagi', 0, 0, 1455486450 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C07', 'Celana', 'Abu-Abu Gelap', 'sore', 0, 1, 1457066753 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C05', 'Celana', 'Abu-Abu Gelap', 'The Executive', 0, 0, 1456676776 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C04', 'Celana', 'Biru', 'pendek', 0, 0, 1456640355 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C03', 'Celana', 'Coklat', 'pendek', 0, 0, 1456698264 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C01', 'Celana', 'Jeans', 'panjang', 1, 0, 1457101358 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'C02', 'Celana', 'Khaki', 'panjang', 0, 0, 1456660542 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H02', 'Handuk', 'Abu-Abu Gelap', '', 0, 0, 1456698270 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H03', 'Handuk', 'Coklat', '', 0, 0, 1456450642 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H04', 'Handuk', 'Hijau', '', 0, 0, 1448676932 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'H01', 'Handuk', 'Hijau Terang', '', 0, 1, 1457066758 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'J01', 'Jaket', 'Abu-Abu Terang', '', 1, 0, 1457101371 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'J02', 'Jaket', 'Hitam', '', 0, 0, 1456495827 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K06', 'Kaos', 'Abu-Abu Gelap', '', 0, 0, 1450491562 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K07', 'Kaos', 'Abu-Abu Gelap', 'Jeddah', 1, 0, 1457231343 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K05', 'Kaos', 'Abu-Abu Terang', '', 0, 0, 1440753212 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K15', 'Kaos', 'Biru Gelap', 'MADK', 0, 0, 1456010370 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K13', 'Kaos', 'Hitam', '', 0, 0, 1454901544 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K14', 'Kaos', 'Hitam', 'Bertanda', 0, 1, 1457066766 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K17', 'Kaos', 'Hitam', 'Gardematon', 1, 0, 1457101397 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K16', 'Kaos', 'Hitam', 'Google', 0, 0, 1455717025 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K11', 'Kaos', 'Hitam', 'Nautica', 0, 0, 1456640345 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K12', 'Kaos', 'Hitam', 'Solop', 0, 0, 1455717022 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K09', 'Kaos', 'Kuning', '', 0, 0, 1456698281 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K08', 'Kaos', 'Kuning', 'No Fear', 0, 0, 1448676943 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K10', 'Kaos', 'Merah', '', 0, 0, 1454901549 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K02', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K01', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K04', 'Kaos', 'Putih', '', 0, 0, 1440753212 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'K03', 'Kaos', 'Putih', '', 0, 0, 1446205242 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P07', 'Polo', 'Abu-Abu Gelap', 'Van Heusen', 1, 0, 1457101382 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P01', 'Polo', 'Abu-Abu Terang', '', 0, 0, 1449499403 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P06', 'Polo', 'Biru', 'lengan panjang', 0, 0, 1456574157 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P03', 'Polo', 'Biru Gelap', '', 0, 1, 1457066780 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P02', 'Polo', 'Biru Terang', '', 0, 1, 1457066785 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P08', 'Polo', 'Hijau', 'lengan panjang', 0, 0, 1452231789 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P05', 'Polo', 'Hijau', 'Van Heusen', 0, 0, 1440753212 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'P04', 'Polo', 'Hitam', '', 0, 0, 1449235500 )") 
+t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values( 'S01', 'Sweater', 'Putih', '', 0, 0, 1440753212 )") 
 
-                    t.executeSql("drop table if exists jenis")
-                    t.executeSql("create table jenis (nama unique, jenis unique, jumlah int)")
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'C', 'Celana', '5' )") 
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'H', 'Handuk', '4' )") 
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'J', 'Jaket', '2' )") 
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'K', 'Kaos', '17' )") 
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'P', 'Polo', '8' )") 
-                    t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'S', 'Sweater', '1' )") 
+t.executeSql("drop table if exists jenis")
+t.executeSql("create table jenis (nama unique, jenis unique, jumlah int)")
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'C', 'Celana', '5' )") 
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'H', 'Handuk', '4' )") 
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'J', 'Jaket', '2' )") 
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'K', 'Kaos', '17' )") 
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'P', 'Polo', '8' )") 
+t.executeSql("insert into jenis (nama, jenis, jumlah) values( 'S', 'Sweater', '1' )") 
 
-                    t.executeSql("drop table if exists warna")
-                    t.executeSql("create table warna (warna unique, hex unique)")
-                    t.executeSql("insert into warna (warna, hex) values( 'Abu-Abu Gelap', '#595959' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Abu-Abu Terang', '#999' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Biru', '#0080ff' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Biru Gelap', '#003366' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Biru Terang', '#99ccff' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Coklat', 'rgb(160, 75, 69)' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Hijau', 'rgb(0, 128, 0)' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Hijau Terang', 'rgb(81, 240, 110)' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Hitam', '#000' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Jeans', 'rgb(50, 72, 101)' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Khaki', 'rgb(161, 132, 107)' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Kuning', '#ffd500' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Merah', '#cc0033' )") 
-                    t.executeSql("insert into warna (warna, hex) values( 'Putih', '#FFF' )") 
+t.executeSql("drop table if exists warna")
+t.executeSql("create table warna (warna unique, hex unique)")
+t.executeSql("insert into warna (warna, hex) values( 'Abu-Abu Gelap', '#595959' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Abu-Abu Terang', '#999' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Biru', '#0080ff' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Biru Gelap', '#003366' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Biru Terang', '#99ccff' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Coklat', 'rgb(160, 75, 69)' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Hijau', 'rgb(0, 128, 0)' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Hijau Terang', 'rgb(81, 240, 110)' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Hitam', '#000' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Jeans', 'rgb(50, 72, 101)' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Khaki', 'rgb(161, 132, 107)' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Kuning', '#ffd500' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Merah', '#cc0033' )") 
+t.executeSql("insert into warna (warna, hex) values( 'Putih', '#FFF' )") 
+
 
 
 

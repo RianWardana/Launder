@@ -124,6 +124,7 @@
 
             ready: function() {
                 //this.sinkronisasi();
+                this.isiData();
             },
 
             isiData: function() {
@@ -161,8 +162,6 @@
             },
 
             unggah: function() {
-                this.isiData();
-
                 console.log("Upload");
                 this.$.buttonUnggah.style.display = 'none';
                 this.$.spinnerUnggah.style.display = 'block';

@@ -2,7 +2,7 @@
 Aplikasi katalog pakaian dan pengatur pencucian
 
 ## Instalasi
-Pastikan bahwa nodejs dan Bower telah terinstall di sistem Anda.
+Pastikan bahwa node.js dan Bower telah terinstall di sistem Anda. Setelah sukses mengunduh repositori ini ke direktori lokal Anda, lakukan:
 
 #### 1. Install komponen Polymer dengan Bower
 Pada program terminal kesayangan Anda, tuliskan:

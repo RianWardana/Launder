@@ -136,6 +136,26 @@
             },
 
 
+            hapus: function() {
+                console.log('Hapus ' + this.rowid)
+
+                var ini = this;
+                db.transaction(
+                    function(t) {
+                        t.executeSql("delete from katalog where rowid=?", 
+                            [ini.rowid]
+                        );
+
+                        t.executeSql("update timestamp set timestamp=? where rowid=1",
+                            [Math.floor(Date.now() /1000)]
+                        );
+                    },  
+                    function(){ ini.$.toastGagal.show(); }, 
+                    function() { ini.splice('katalog', ini.rowid - 1, 1) } 
+                );
+            },
+
+
             simpan: function() {
                 console.log('Simpan ' + this.rowid);
 

@@ -161,8 +161,8 @@
                     var ini = this;
                     db.transaction(
                         function(t) {
-                            t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci) values(?, ?, ?, ?, ?)", 
-                                [ini.namaLengkap, ini.pilihanJenis, ini.pilihanWarna, (ini.inputKeterangan != '' ? ', ' : '') + ini.inputKeterangan, ini.pilihanDicuci]
+                            t.executeSql("insert into katalog (nama, jenis, warna, keterangan, dicuci, laundry, terakhir_dicuci) values(?, ?, ?, ?, ?, ?, ?)", 
+                                [ini.namaLengkap, ini.pilihanJenis, ini.pilihanWarna, ini.inputKeterangan, ini.pilihanDicuci, 0, Math.floor(Date.now() /1000)]
                             );
 
                             t.executeSql("update jenis set jumlah=? where nama=?", 
@@ -187,8 +187,10 @@
                     nama: this.namaLengkap,
                     jenis: this.pilihanJenis,
                     warna: this.pilihanWarna,
-                    keterangan: (this.inputKeterangan != '' ? ', ' : '') + this.inputKeterangan,
-                    dicuci: this.pilihanDicuci
+                    keterangan: this.inputKeterangan,
+                    dicuci: this.pilihanDicuci,
+                    laundry: 0,
+                    terakhir_dicuci: Math.floor(Date.now() /1000)
                 });
                 this.set(['jenis', this.rowidJenis - 1, 'jumlah'], this.pilihanJumlah);
                 this.$.toastBerhasil.show();

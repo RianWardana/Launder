@@ -25,10 +25,11 @@
             width: 150px;
         }
 
-        paper-button#tutup {
+        div.buttons paper-button#tutup {
             color: #FFAB00;
             margin: 0;
-            text-align: right;
+            /*margin-right: 100px;*/
+            text-align: left;
         }
 
         /**********************************************************************/
@@ -52,7 +53,7 @@
                 <paper-button raised dialog-confirm on-tap="laundry">Laundry</paper-button>
             </div>
 
-            <div class="buttons">
+            <div class="horizontal start-justified layout buttons">
                 <paper-button dialog-confirm id="tutup">Tutup</paper-button>
             </div>
         </paper-dialog>
@@ -124,6 +125,7 @@
             },
 
             update: function(rowid, dicuci, laundry) {
+                this.timestampLocal = Math.floor(Date.now() /1000)
                 this.set(['katalog', rowid - 1, 'dicuci'], dicuci);
                 this.set(['katalog', rowid - 1, 'laundry'], laundry);
                 if (dicuci || laundry) this.set(['katalog', rowid - 1, 'terakhir_dicuci'], Math.floor(Date.now() / 1000));

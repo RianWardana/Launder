@@ -209,7 +209,10 @@
 
 
             _sort: function(a, b) {
-                if ((a.jenis == b.jenis) && (a.warna == b.warna)) return a.keterangan < b.keterangan ? -1 : 1;
+                var keteranganA = a.keterangan
+                var keteranganB = b.keterangan
+
+                if ((a.jenis == b.jenis) && (a.warna == b.warna)) return keteranganA.toLowerCase() < keteranganB.toLowerCase() ? -1 : 1;
                 else if (a.jenis == b.jenis) return a.warna < b.warna ? -1 : 1;
                 else return a.jenis < b.jenis ? -1 : 1;
             }

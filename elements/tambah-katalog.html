@@ -146,7 +146,7 @@
             tutupJenis: function(e) {
                 this.rowidJenis = e.model.item.rowid;
                 this.pilihanNama = e.model.item.nama;
-                this.pilihanJumlah = e.model.item.jumlah + 1;
+                this.pilihanJumlah = parseInt(e.model.item.jumlah) + 1;
                 this.pilihanJenis = e.model.item.jenis;
                 this.namaLengkap = this.pilihanNama + (this.pilihanJumlah < 10 ? '0' : '') + this.pilihanJumlah;
             },
